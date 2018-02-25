@@ -5,7 +5,7 @@ import java.nio.file.Paths
 import com.feedzai.cosytest.{CleanUp, DockerComposeSetup, Utils}
 import org.scalatest.{FlatSpec, MustMatchers}
 
-class ProjectContainerIdsSpec extends FlatSpec with MustMatchers with CleanUp {
+class ProjectNetworksSpec extends FlatSpec with MustMatchers with CleanUp {
 
   val setup = DockerComposeSetup(
     Utils.randomSetupName,
@@ -23,19 +23,18 @@ class ProjectContainerIdsSpec extends FlatSpec with MustMatchers with CleanUp {
 
   override def dockerSetups = Seq(setup, invalidSetup)
 
-  it should "Return an empty list of ids when project doesn't exist" in {
-    invalidSetup.getProjectContainerIds() mustEqual Seq.empty
+  it should "Return an empty list of network ids when project doesn't exist" in {
+    invalidSetup.getProjectNetworkIds() mustEqual Seq.empty
   }
 
-  it should "Return an empty list of ids when no containers exist" in {
-    setup.getProjectContainerIds() mustEqual Seq.empty
+  it should "Return an empty list of network ids when no containers exist" in {
+    setup.getProjectNetworkIds() mustEqual Seq.empty
   }
 
-  it should "Return the service list of ids of all services" in {
+  it should "Return the network ids list of all services" in {
     setup.dockerComposeUp()
-    setup.getProjectContainerIds().size mustEqual 3
-    setup.getProjectContainerIds().forall(_.isEmpty) must not be true
+    setup.getProjectNetworkIds().size mustEqual 1
+    setup.getProjectNetworkIds().nonEmpty mustBe true
     setup.dockerComposeDown()
   }
-
 }
